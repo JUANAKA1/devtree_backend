@@ -1,14 +1,13 @@
 import { Router } from "express";
-import { createUser, getUserProfile, login } from "../controllers/user.controller";
-import { userLoginSchema, userRegisterSchema } from "../schemas/user.schema";
+import { getUserProfile, updateProfile, updateProfileImage } from "../controllers/user.controller";
+import { userProfileSchema } from "../schemas/user.schema";
 import { validateSchema } from "../middlewares/validator.middleware";
 import { authenticate } from "../middlewares/auth.middleware";
 
-
 const router = Router();
 
-router.post("/register", validateSchema(userRegisterSchema), createUser);
-router.post("/login", validateSchema(userLoginSchema), login);
-router.get("/user",authenticate, getUserProfile);
+router.get("/",authenticate, getUserProfile);
+router.patch("/",validateSchema(userProfileSchema), authenticate, updateProfile);
+router.patch("/image", authenticate, updateProfileImage);
 
 export default router;

@@ -30,3 +30,13 @@ export const userLoginSchema = z.object({
     .min(5, "El correo es requerido"),
   password: z.string().trim().min(6, "La contraseña es requerida"),
 });
+export const userProfileSchema = z.object({
+  handle: z
+    .string()
+    .trim()
+    .min(3, "El handle debe tener al menos 3 caracteres"),
+  description: z
+    .string()
+    .trim()
+    .min(3, "La descripción debe tener al menos 2 caracteres"),
+});

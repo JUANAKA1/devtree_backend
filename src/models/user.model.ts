@@ -27,6 +27,10 @@ const userSchema = new Schema<IUser>(
       required: true,
       trim: true,
     },
+    description: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,

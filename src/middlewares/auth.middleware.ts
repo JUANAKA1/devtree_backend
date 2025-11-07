@@ -1,13 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { UserModel } from "../models/user.model";
-import { createAccessToken } from "../utils/jwt";
 import { ENV } from "../config/env.config";
 import jwt from "jsonwebtoken";
-import { checkPassword } from "../utils/auth";
 import { IUser } from "../interfaces/user.interface";
+
 declare global {
   namespace Express {
-    export interface Request {
+    interface Request {
       user?: IUser;
     }
   }
@@ -20,7 +19,9 @@ export const authenticate = async (
   try {
     const bearer = req.headers.authorization;
     if (!bearer) {
-      return res.status(401).json({ message: "No autorizado: falta token" });
+      return res
+        .status(401)
+        .json({ message: "No autorizado hace falta el token" });
     }
 
     const [, token] = bearer.split(" ");
