@@ -3,8 +3,9 @@ import { UserModel } from "../models/user.model";
 import { checkPassword, hashPassword } from "../utils/auth";
 import slug from "slug";
 import { createAccessToken } from "../utils/jwt";
-import { log } from "console";
-
+import formidable from "formidable";
+import cloudinary from "../config/cloudinary";
+import { v4 as uuid } from "uuid";
 export const createUser = async (req: Request, res: Response) => {
   try {
     const { name, email, password, handle: handleInput } = req.body;
@@ -90,7 +91,44 @@ export const updateProfile = async (req: Request, res: Response) => {
 
 export const updateProfileImage = async (req: Request, res: Response) => {
   try {
-    console.log(req.body);
+    const form = formidable({ multiples: false });
+
+    form.parse(req, async (err, fields, files) => {
+      if (err) {
+        return res
+          .status(400)
+          .json({ message: "Error al procesar la imagen", error: err });
+      }
+
+      // Asegurar que el archivo exista
+      const file = Array.isArray(files.file) ? files.file[0] : files.file;
+      if (!file || !file.filepath) {
+        return res
+          .status(400)
+          .json({ message: "No se encontró el archivo de imagen" });
+      }
+
+      cloudinary.uploader.upload(
+        file.filepath,
+        { public_id: uuid() },
+        async (error, result) => {
+          if (error)
+            return res
+              .status(500)
+              .json({ message: "Error al subir la imagen", error });
+          if (!req.user) {
+            return res.status(401).json({ message: "No autorizado" });
+          }
+          if (result) {
+            (req.user.image = result.secure_url), await req.user.save();
+            return res.status(200).json({
+              message: "Imagen de perfil actualizada correctamente",
+              imageUrl: result.secure_url,
+            });
+          }
+        }
+      );
+    });
   } catch (error) {
     res
       .status(500)

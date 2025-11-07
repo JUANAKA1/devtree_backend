@@ -8,6 +8,6 @@ const router = Router();
 
 router.get("/",authenticate, getUserProfile);
 router.patch("/",validateSchema(userProfileSchema), authenticate, updateProfile);
-router.patch("/image", authenticate, updateProfileImage);
+router.post("/image", authenticate, updateProfileImage);
 
 export default router;

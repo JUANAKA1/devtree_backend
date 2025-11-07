@@ -31,6 +31,10 @@ const userSchema = new Schema<IUser>(
       type: String,
       default: "",
     },
+    image: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,
