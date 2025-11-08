@@ -35,6 +35,10 @@ const userSchema = new Schema<IUser>(
       type: String,
       default: "",
     },
+    links: {
+      type: String,
+      default: "[]",
+    },
   },
   {
     timestamps: true,

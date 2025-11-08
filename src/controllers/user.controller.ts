@@ -6,6 +6,7 @@ import { createAccessToken } from "../utils/jwt";
 import formidable from "formidable";
 import cloudinary from "../config/cloudinary";
 import { v4 as uuid } from "uuid";
+
 export const createUser = async (req: Request, res: Response) => {
   try {
     const { name, email, password, handle: handleInput } = req.body;
@@ -68,7 +69,7 @@ export const getUserProfile = async (req: Request, res: Response) => {
 
 export const updateProfile = async (req: Request, res: Response) => {
   try {
-    const { handle: handleInput, description } = req.body;
+    const { handle: handleInput, description, links } = req.body;
 
     if (!req.user) {
       return res.status(401).json({ message: "No autorizado" });
@@ -81,6 +82,7 @@ export const updateProfile = async (req: Request, res: Response) => {
 
     req.user.description = description;
     req.user.handle = handle;
+    req.user.links = links;
     await req.user.save();
 
     res.json({ message: "Perfil actualizado correctamente" });
