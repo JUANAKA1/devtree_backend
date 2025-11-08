@@ -137,3 +137,20 @@ export const updateProfileImage = async (req: Request, res: Response) => {
       .json({ message: "Error al actualizar la imagen de perfil", error });
   }
 };
+
+export const getUserByHandle = async (req: Request, res: Response) => {
+  try {
+
+    const { handle } = req.params;
+    const user = await UserModel.findOne({ handle }).select("-_id -password -email -__v");
+       if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+    res.json({ message: "Usuario obtenido correctamente", user });
+  } catch (error) {
+
+        res
+      .status(500)
+      .json({ message: "Error obtener ", error });
+  }
+}
