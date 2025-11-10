@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   getUserByHandle,
   getUserProfile,
+  searchByHandle,
   updateProfile,
   updateProfileImage,
 } from "../controllers/user.controller";
@@ -20,5 +21,6 @@ router.patch(
 );
 router.post("/image", authenticate, updateProfileImage);
 router.get("/:handle", getUserByHandle);
+router.post("/search", searchByHandle);
 
 export default router;

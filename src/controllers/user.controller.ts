@@ -6,6 +6,7 @@ import { createAccessToken } from "../utils/jwt";
 import formidable from "formidable";
 import cloudinary from "../config/cloudinary";
 import { v4 as uuid } from "uuid";
+import { error } from "console";
 
 export const createUser = async (req: Request, res: Response) => {
   try {
@@ -140,17 +141,31 @@ export const updateProfileImage = async (req: Request, res: Response) => {
 
 export const getUserByHandle = async (req: Request, res: Response) => {
   try {
-
     const { handle } = req.params;
-    const user = await UserModel.findOne({ handle }).select("-_id -password -email -__v");
-       if (!user) {
+    const user = await UserModel.findOne({ handle }).select(
+      "-_id -password -email -__v"
+    );
+    if (!user) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
     res.json({ message: "Usuario obtenido correctamente", user });
   } catch (error) {
-
-        res
-      .status(500)
-      .json({ message: "Error obtener ", error });
+    res.status(500).json({ message: "Error al obtener ", error });
   }
-}
+};
+
+export const searchByHandle = async (req: Request, res: Response) => {
+  try {
+    console.log(req.body.handle);
+    const { handle } = req.body;
+    const userExists = await UserModel.findOne({ handle });
+    if (userExists) {
+      return res
+        .status(409)
+        .json({ message: `El ususario ${handle} ya esta registrado` });
+    }
+    res.json({ message: `El ususario ${handle} esta disponible` });
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener"});
+  }
+};
